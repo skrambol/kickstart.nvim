@@ -205,6 +205,22 @@ require('lazy').setup({
         cmp_autopairs.on_confirm_done()
       )
     end
+  },
+  {
+    "epwalsh/obsidian.nvim",
+    lazy = true,
+    event = {
+      -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
+      -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/**.md"
+      "BufReadPre /mnt/d/obsidian/**.md",
+      "BufNewFile /mnt/d/obsidian/**.md",
+    },
+    dependencies = {
+      -- Required.
+      "nvim-lua/plenary.nvim",
+      "hrsh7th/nvim-cmp",
+      "nvim-telescope/telescope.nvim"
+    }
   }
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -559,6 +575,25 @@ cmp.setup {
     { name = 'luasnip' },
   }
 }
+
+-- obsidian.nvim
+require("obsidian").setup({
+  dir = "/mnt/d/obsidian",
+  notes_subdir = "notes",
+  daily_notes = {
+    folder = "notes/journal",
+    date_format = "%Y-%m-%d",
+    alias_format = "%Y-%m-%d",
+    template = "journal.md"
+  },
+  templates = {
+    subdir = "notes/templates",
+    date_format = "%Y-%m-%d",
+    time_format = "%H:%M",
+    -- A map for custom variables, the key should be the variable and the value a function
+    substitutions = {}
+  }
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
