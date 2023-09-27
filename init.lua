@@ -90,16 +90,26 @@ require('lazy').setup({
 
         -- don't override the built-in and fugitive keymaps
         local gs = package.loaded.gitsigns
-        vim.keymap.set({'n', 'v'}, ']g', function()
+        vim.keymap.set({ 'n', 'v' }, ']g', function()
           if vim.wo.diff then return ']g' end
           vim.schedule(function() gs.next_hunk() end)
           return '<Ignore>'
-        end, {expr=true, buffer = bufnr, desc = "Jump to next hunk"})
-        vim.keymap.set({'n', 'v'}, '[g', function()
+        end, { expr = true, buffer = bufnr, desc = "Jump to next hunk" })
+        vim.keymap.set({ 'n', 'v' }, '[g', function()
           if vim.wo.diff then return '[g' end
           vim.schedule(function() gs.prev_hunk() end)
           return '<Ignore>'
-        end, {expr=true, buffer = bufnr, desc = "Jump to previous hunk"})
+        end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
+        vim.keymap.set({ 'n' }, '<leader>gr', function()
+          if vim.wo.diff then return '<leader>gr' end
+          vim.schedule(function() gs.reset_hunk() end)
+          return '<Ignore>'
+        end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
+        vim.keymap.set({ 'v' }, '<leader>gr', function()
+          if vim.wo.diff then return '<leader>gr' end
+          vim.schedule(function() gs.reset_hunk({vim.fn.line('.'), vim.fn.line('v')}) end)
+          return '<Ignore>'
+        end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
       end,
     },
   },
@@ -109,6 +119,7 @@ require('lazy').setup({
     priority = 1000,
     config = function()
       vim.cmd.colorscheme 'nordfox'
+      vim.o.cursorline = true
     end,
   },
 
@@ -179,6 +190,21 @@ require('lazy').setup({
         -- Configuration here, or leave empty to use defaults
       })
     end
+  },
+  {
+    "windwp/nvim-autopairs",
+    -- Optional dependency
+    dependencies = { 'hrsh7th/nvim-cmp' },
+    config = function()
+      require("nvim-autopairs").setup {}
+      -- If you want to automatically add `(` after selecting a function or method
+      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+      local cmp = require('cmp')
+      cmp.event:on(
+        'confirm_done',
+        cmp_autopairs.on_confirm_done()
+      )
+    end
   }
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -203,8 +229,8 @@ require('lazy').setup({
 vim.o.hlsearch = false
 
 -- Make line numbers default
-vim.wo.number = true
-vim.wo.relativenumber = true
+vim.o.number = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode
 -- vim.o.mouse = 'a'
@@ -237,6 +263,13 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+vim.o.wrap = false
+vim.o.scrolloff = 4
+vim.o.sidescrolloff = 4
+
+vim.o.list = true
+vim.opt.listchars = { trail = '·' }
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -248,8 +281,19 @@ vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = tr
 vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
 
 -- fugitive
-vim.keymap.set('n', '<leader>gs', "<cmd>G<cr><C-w><C-o>", { silent = true, desc="git status" })
-vim.keymap.set('n', '<leader>gl', "<cmd>Git log<cr>", { silent = true, desc="git log" })
+vim.keymap.set('n', '<leader>gs', '<cmd>G<CR><C-w><C-o>', { silent = true, desc = 'git status' })
+vim.keymap.set('n', '<leader>gl', '<cmd>Git log<CR>', { silent = true, desc = 'git log' })
+
+-- move lines
+vim.keymap.set('v', 'J', ':m \'>+1<CR>gv=gv', { silent = true, desc = 'move selection down one line' })
+vim.keymap.set('v', 'K', ':m \'<-2<CR>gv=gv', { silent = true, desc = 'move selection up one line' })
+vim.keymap.set('v', '>', '>gv', { silent = true, desc = 'add indentation to selection' })
+vim.keymap.set('v', '<', '<gv', { silent = true, desc = 'remove indentation from selection' })
+
+-- buffers
+vim.keymap.set('n', '<leader>d', '<cmd>bdel<CR>', { silent = true, desc = '[d]elete buffer' })
+vim.keymap.set('n', '<leader><Space>', '<C-^>', { silent = true, desc = 'Open previous file' })
+vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -280,7 +324,7 @@ pcall(require('telescope').load_extension, 'fzf')
 
 -- See `:help telescope.builtin`
 vim.keymap.set('n', '<leader>?', require('telescope.builtin').oldfiles, { desc = '[?] Find recently opened files' })
-vim.keymap.set('n', '<leader><space>', require('telescope.builtin').buffers, { desc = '[ ] Find existing buffers' })
+vim.keymap.set('n', '<C-b>', require('telescope.builtin').buffers, { desc = '[b] Find existing buffers' })
 vim.keymap.set('n', '<leader>/', function()
   -- You can pass additional configuration to telescope to change theme, layout, etc.
   require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -291,7 +335,7 @@ end, { desc = '[/] Fuzzily search in current buffer' })
 
 vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
-vim.keymap.set('n', '<leader>sh', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
+vim.keymap.set('n', '<F1>', require('telescope.builtin').help_tags, { desc = '[S]earch [H]elp' })
 vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { desc = '[S]earch current [W]ord' })
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -311,9 +355,9 @@ require('nvim-treesitter.configs').setup {
   incremental_selection = {
     enable = true,
     keymaps = {
-      init_selection = '<c-space>',
-      node_incremental = '<c-space>',
-      scope_incremental = '<c-s>',
+      init_selection = '<C-space>',
+      node_incremental = '<C-space>',
+      scope_incremental = '<C-s>',
       node_decremental = '<M-space>',
     },
   },
@@ -386,8 +430,8 @@ local on_attach = function(_, bufnr)
     vim.keymap.set('n', keys, func, { buffer = bufnr, desc = desc })
   end
 
-  nmap('<leader><F2>', vim.lsp.buf.rename, '[R]e[n]ame')
-  nmap('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+  nmap('<leader><F2>', vim.lsp.buf.rename, 'Rename')
+  nmap('<leader><CR>', vim.lsp.buf.code_action, 'Code Action')
 
   nmap('gd', vim.lsp.buf.definition, '[G]oto [D]efinition')
   nmap('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
@@ -465,7 +509,7 @@ mason_lspconfig.setup_handlers {
 require('lspconfig').tsserver.setup {
   capabilities = capabilities,
   on_attach = on_attach,
-  settings = {cmd = {"bunx", "--bun", "typescript-language-server", "--stdio"}},
+  settings = { cmd = { 'bunx', '--bun', 'typescript-language-server', '--stdio' } },
 }
 
 -- [[ Configure nvim-cmp ]]
@@ -513,9 +557,6 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
-  },
-  experimental = {
-    ghost_text = true
   }
 }
 
