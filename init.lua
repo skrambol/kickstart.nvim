@@ -48,7 +48,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -72,7 +72,7 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
@@ -107,7 +107,7 @@ require('lazy').setup({
         end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
         vim.keymap.set({ 'v' }, '<leader>gr', function()
           if vim.wo.diff then return '<leader>gr' end
-          vim.schedule(function() gs.reset_hunk({vim.fn.line('.'), vim.fn.line('v')}) end)
+          vim.schedule(function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end)
           return '<Ignore>'
         end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
       end,
@@ -120,6 +120,7 @@ require('lazy').setup({
     config = function()
       vim.cmd.colorscheme 'nordfox'
       vim.o.cursorline = true
+      vim.api.nvim_set_hl(0, "CursorLine", { bg = "none", ctermbg = "none" })
     end,
   },
 
@@ -284,7 +285,7 @@ vim.o.scrolloff = 4
 vim.o.sidescrolloff = 4
 
 vim.o.list = true
-vim.opt.listchars = { trail = '·' }
+vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }
 
 -- [[ Basic Keymaps ]]
 
@@ -310,6 +311,7 @@ vim.keymap.set('v', '<', '<gv', { silent = true, desc = 'remove indentation from
 vim.keymap.set('n', '<leader>d', '<cmd>bdel<CR>', { silent = true, desc = '[d]elete buffer' })
 vim.keymap.set('n', '<leader><Space>', '<C-^>', { silent = true, desc = 'Open previous file' })
 vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
+vim.keymap.set('i', '<C-s>', '<esc><cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
@@ -361,12 +363,16 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim',
+    'markdown', 'markdown_inline' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
 
-  highlight = { enable = true },
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = { "markdown" }
+  },
   indent = { enable = true },
   incremental_selection = {
     enable = true,
@@ -577,23 +583,38 @@ cmp.setup {
 }
 
 -- obsidian.nvim
-require("obsidian").setup({
-  dir = "/mnt/d/obsidian",
-  notes_subdir = "notes",
+local obsidian = require('obsidian')
+obsidian.setup({
+  dir = '/mnt/d/obsidian/notes',
+  notes_subdir = '',
   daily_notes = {
-    folder = "notes/journal",
-    date_format = "%Y-%m-%d",
-    alias_format = "%Y-%m-%d",
-    template = "journal.md"
+    folder = 'journal',
+    date_format = '%Y-%m-%d',
+    alias_format = '%Y-%m-%d',
+    template = 'journal.md'
   },
   templates = {
-    subdir = "notes/templates",
-    date_format = "%Y-%m-%d",
-    time_format = "%H:%M",
+    subdir = 'templates',
+    date_format = '%Y-%m-%d',
+    time_format = '%H:%M',
     -- A map for custom variables, the key should be the variable and the value a function
     substitutions = {}
+  },
+  disable_frontmatter = true,
+  overwrite_mappings = true,
+  mappings = {
+    ['gf'] = {
+      action = function()
+        return obsidian.util.gf_passthrough()
+      end,
+      opts = { noremap = false, expr = true, buffer = true }
+    },
   }
 })
+
+-- obsidian keymaps even outside of obsidian vault
+vim.keymap.set('n', '<leader>ot', '<cmd>ObsidianToday<CR>', { silent = true, desc = 'obsidian.nvim open note today' })
+vim.keymap.set('n', '<leader>oc', '<cmd>enew<CR><cmd>ObsidianTemplate dev.md<CR>', { silent = true, desc = 'obsidian.nvim create new dev.md note' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
