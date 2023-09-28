@@ -104,12 +104,12 @@ require('lazy').setup({
           if vim.wo.diff then return '<leader>gr' end
           vim.schedule(function() gs.reset_hunk() end)
           return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
+        end, { expr = true, buffer = bufnr, desc = "Reset this hunk" })
         vim.keymap.set({ 'v' }, '<leader>gr', function()
           if vim.wo.diff then return '<leader>gr' end
           vim.schedule(function() gs.reset_hunk({ vim.fn.line('.'), vim.fn.line('v') }) end)
           return '<Ignore>'
-        end, { expr = true, buffer = bufnr, desc = "Jump to previous hunk" })
+        end, { expr = true, buffer = bufnr, desc = "Reset this hunk" })
       end,
     },
   },
