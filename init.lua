@@ -286,6 +286,7 @@ vim.o.sidescrolloff = 4
 
 vim.o.list = true
 vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }
+vim.o.showmode = false
 
 -- [[ Basic Keymaps ]]
 
@@ -343,6 +344,16 @@ require('telescope').setup {
     },
     path_display = { "smart" }
   },
+  pickers = {
+    buffers = {
+      previewer = false,
+      mappings = {
+        n = {
+          ['D'] = require('telescope.actions').delete_buffer
+        }
+      }
+    }
+  }
 }
 
 -- Enable telescope fzf native, if installed
@@ -359,7 +370,13 @@ vim.keymap.set('n', '<leader>/', function()
   })
 end, { desc = '[/] Fuzzily search in current buffer' })
 
-vim.keymap.set('n', '<C-p>', require('telescope.builtin').git_files, { desc = 'Search [G]it [F]iles' })
+vim.keymap.set('n', '<C-p>', function ()
+  if pcall(require('telescope.builtin').git_files) then
+  else
+    print("[!] Directory is not a git repository. Running search files instead.")
+    require('telescope.builtin').find_files()
+  end
+end, { desc = 'Search [G]it [F]iles' })
 vim.keymap.set('n', '<leader>sf', require('telescope.builtin').find_files, { desc = '[S]earch [F]iles' })
 vim.keymap.set('n', '<F1>', function()
   require('telescope.builtin').help_tags({
@@ -376,7 +393,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim',
-    'markdown', 'markdown_inline' },
+    'markdown', 'markdown_inline', 'elixir' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -546,6 +563,30 @@ require('lspconfig').tsserver.setup {
   settings = { cmd = { 'bunx', '--bun', 'typescript-language-server', '--stdio' } },
 }
 
+-- lexical (elixir lsp)
+local lexical_config = {
+  filetypes = {"elixir", "eelixir"},
+  cmd = {"/home/x24/.local/install/lexical/_build/dev/package/lexical/bin/start_lexical.sh"},
+  settings = {},
+}
+local configs = require('lspconfig.configs')
+if not configs.lexical_config then
+  configs.lexical = {
+    default_config = {
+      filetypes = lexical_config.filetypes,
+      cmd = lexical_config.cmd,
+      root_dir = function (name)
+        return require('lspconfig').util.root_pattern("mix.exs", ".git")(name) or vim.loop.os_homedir()
+      end,
+      settings = lexical_config.settings
+    }
+  }
+end
+require('lspconfig').lexical.setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
+
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
 local cmp = require 'cmp'
@@ -570,18 +611,14 @@ cmp.setup {
       select = true,
     },
     ['<Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif luasnip.expand_or_locally_jumpable() then
+      if luasnip.expand_or_locally_jumpable() then
         luasnip.expand_or_jump()
       else
         fallback()
       end
     end, { 'i', 's' }),
     ['<S-Tab>'] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif luasnip.locally_jumpable(-1) then
+      if luasnip.locally_jumpable(-1) then
         luasnip.jump(-1)
       else
         fallback()
