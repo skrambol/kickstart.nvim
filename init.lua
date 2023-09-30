@@ -161,23 +161,19 @@ vim.keymap.set('n', '<leader><Space>', '<C-^>', { silent = true, desc = 'Open pr
 vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
 vim.keymap.set('i', '<C-s>', '<esc><cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
 
-local move = function(list, move)
-  local cmd = list .. move
-  local fallback = ''
-
-  if move == 'next' then
-    fallback = 'first'
-  else
-    fallback = 'last'
+local function wrap_list(list, command)
+  if pcall(function() vim.cmd({cmd = list .. command}, {}) end) then
+    return
   end
 
-  if pcall(function() vim.api.nvim_cmd({cmd = cmd}, {}) end) then
+  if command == 'next' then
+    wrap_list(list, 'first')
   else
-    vim.api.nvim_cmd({cmd = list .. fallback}, {})
+    wrap_list(list, 'last')
   end
 end
-vim.keymap.set('n', ']q', function() move('c', 'next') end, { silent = true, expr = true, desc = 'Go to next quickfix item' })
-vim.keymap.set('n', '[q', function() move('c', 'prev') end, { silent = true, expr = true, desc = 'Go to prev quickfix item' })
+vim.keymap.set('n', ']q', function() wrap_list('c', 'next') end, { silent = true, desc = 'Go to next quickfix item' })
+vim.keymap.set('n', '[q', function() wrap_list('c', 'prev') end, { silent = true, desc = 'Go to prev quickfix item' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
