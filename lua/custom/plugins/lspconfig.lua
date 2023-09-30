@@ -111,7 +111,7 @@ return {
     -- lexical (elixir lsp)
     local lexical_config = {
       filetypes = {"elixir", "eelixir"},
-      cmd = {"/home/x24/.local/install/lexical/_build/dev/package/lexical/bin/start_lexical.sh"},
+      cmd = {"/home/x24/.local/bin/start_lexical.sh"},
       settings = {},
     }
     local configs = require('lspconfig.configs')
