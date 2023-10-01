@@ -13,7 +13,7 @@ return {
     -- Additional lua configuration, makes nvim stuff amazing!
     'folke/neodev.nvim',
   },
-  config = function ()
+  config = function()
     local on_attach = function(_, bufnr)
       local nmap = function(keys, func, desc)
         if desc then
@@ -105,13 +105,18 @@ return {
     lspconfig.tsserver.setup {
       capabilities = capabilities,
       on_attach = on_attach,
-      settings = { cmd = { 'bunx', '--bun', 'typescript-language-server', '--stdio' } },
+      settings = {
+        cmd = { 'bunx', '--bun', 'typescript-language-server', '--stdio' },
+        completions = {
+          completeFunctionCalls = true
+        }
+      },
     }
 
     -- lexical (elixir lsp)
     local lexical_config = {
-      filetypes = {"elixir", "eelixir"},
-      cmd = {"/home/x24/.local/bin/start_lexical.sh"},
+      filetypes = { "elixir", "eelixir" },
+      cmd = { "/home/x24/.local/bin/start_lexical.sh" },
       settings = {},
     }
     local configs = require('lspconfig.configs')
@@ -120,7 +125,7 @@ return {
         default_config = {
           filetypes = lexical_config.filetypes,
           cmd = lexical_config.cmd,
-          root_dir = function (name)
+          root_dir = function(name)
             return lspconfig.util.root_pattern("mix.exs", ".git")(name) or vim.loop.os_homedir()
           end,
           settings = lexical_config.settings
