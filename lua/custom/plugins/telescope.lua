@@ -44,6 +44,9 @@ return {
               ['D'] = require('telescope.actions').delete_buffer
             }
           }
+        },
+        git_files = {
+          show_untracked = true,
         }
       }
     }
@@ -79,5 +82,8 @@ return {
     vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
     vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
+    vim.keymap.set('n', '<leader>vrc', function ()
+      require('telescope.builtin').git_files({cwd = "~/.config/nvim"})
+    end, {desc = 'Search neovim config'})
   end
 }
