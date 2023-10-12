@@ -8,7 +8,7 @@ return {
 
     -- Useful status updates for LSP
     -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-    { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
+    { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {align ={bottom=false}} },
 
     -- Additional lua configuration, makes nvim stuff amazing!
     'folke/neodev.nvim',
@@ -60,7 +60,7 @@ return {
     --  If you want to override the default filetypes that your language server will attach to you can
     --  define the property 'filetypes' to the map in question.
     local servers = {
-      -- clangd = {},
+      clangd = {},
       -- gopls = {},
       -- pyright = {},
       -- rust_analyzer = {},
