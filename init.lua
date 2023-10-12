@@ -37,7 +37,7 @@ require('lazy').setup({
   'tpope/vim-sleuth',
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',  opts = {} },
+  { 'folke/which-key.nvim',   opts = {} },
 
   {
     'EdenEast/nightfox.nvim',
@@ -75,7 +75,7 @@ require('lazy').setup({
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
+  { 'numToStr/Comment.nvim',  opts = {} },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
@@ -100,7 +100,7 @@ vim.o.relativenumber = true
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamedplus'
+-- vim.o.clipboard = 'unnamedplus'
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -162,7 +162,20 @@ vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { silent = true, desc = 'write to cur
 vim.keymap.set('i', '<C-s>', '<esc><cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
 
 local function wrap_list(list, command)
-  if pcall(function() vim.cmd({cmd = list .. command}, {}) end) then
+  local tbl = {}
+
+  if list == "c" then
+    tbl = vim.fn.getqflist()
+  elseif list == "l" then
+    tbl = vim.fn.getloclist(0)
+  end
+
+  if next(tbl) == nil then
+    print("[!] cannot move to next file. list is blank")
+    return
+  end
+
+  if pcall(function() vim.cmd({ cmd = list .. command }, {}) end) then
     return
   end
 
@@ -172,8 +185,8 @@ local function wrap_list(list, command)
     wrap_list(list, 'last')
   end
 end
-vim.keymap.set('n', ']q', function() wrap_list('c', 'next') end, { silent = true, desc = 'Go to next quickfix item' })
-vim.keymap.set('n', '[q', function() wrap_list('c', 'prev') end, { silent = true, desc = 'Go to prev quickfix item' })
+vim.keymap.set('n', ']q', function() wrap_list('c', 'next') end, { silent = true, desc = 'Next quickfix item' })
+vim.keymap.set('n', '[q', function() wrap_list('c', 'prev') end, { silent = true, desc = 'Previous quickfix item' })
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
