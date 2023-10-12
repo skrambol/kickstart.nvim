@@ -2,7 +2,7 @@ return {
   'saccarosium/neomarks',
   config = function ()
     local neomarks = require('neomarks')
-    neomarks.setup()
+    neomarks.setup({menu = {title=''}})
 
     vim.keymap.set('n', '<leader>h', neomarks.mark_file, {silent=true})
     vim.keymap.set('n', '<C-h>', neomarks.menu_toggle, {silent=true})
