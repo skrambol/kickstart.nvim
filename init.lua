@@ -44,8 +44,8 @@ require('lazy').setup({
     priority = 1000,
     config = function()
       vim.cmd.colorscheme 'nordfox'
+      vim.o.cursorlineopt = "number"
       vim.o.cursorline = true
-      vim.api.nvim_set_hl(0, "CursorLine", { bg = "none", ctermbg = "none" })
     end,
   },
 
@@ -126,7 +126,7 @@ vim.o.completeopt = 'menuone,noselect'
 vim.o.termguicolors = true
 
 vim.o.wrap = false
-vim.o.scrolloff = 4
+vim.o.scrolloff = 9999
 vim.o.sidescrolloff = 4
 
 vim.o.list = true
@@ -142,8 +142,8 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set({ 'n', 'v' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set({ 'n', 'v' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
-vim.keymap.set({ 'n', 'v' }, '0', "v:count == 0 ? 'g0' : 'k'", { expr = true, silent = true })
-vim.keymap.set({ 'n', 'v' }, '$', "v:count == 0 ? 'g$' : 'j'", { expr = true, silent = true })
+-- vim.keymap.set({ 'n', 'v' }, '0', "v:count == 0 ? 'g0' : 'k'", { expr = true, silent = true })
+-- vim.keymap.set({ 'n', 'v' }, '$', "v:count == 0 ? 'g$' : 'j'", { expr = true, silent = true })
 
 -- fugitive
 vim.keymap.set('n', '<leader>gs', '<cmd>G<CR><C-w><C-o>', { silent = true, desc = 'git status' })
