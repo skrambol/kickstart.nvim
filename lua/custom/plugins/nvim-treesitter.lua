@@ -3,6 +3,7 @@ return {
   'nvim-treesitter/nvim-treesitter',
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
+    'nvim-treesitter/nvim-treesitter-context',
   },
   build = ':TSUpdate',
   config = function()
@@ -75,5 +76,9 @@ return {
         },
       },
     }
+
+    local context = require('treesitter-context')
+    vim.keymap.set('n', '[c', context.go_to_context, {silent=true})
+    vim.keymap.set('n', '<leader>c', context.toggle, {silent=true})
   end
 }
