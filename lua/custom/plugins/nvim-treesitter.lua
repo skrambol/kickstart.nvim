@@ -4,6 +4,7 @@ return {
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
     'nvim-treesitter/nvim-treesitter-context',
+    'windwp/nvim-ts-autotag',
   },
   build = ':TSUpdate',
   config = function()
@@ -75,10 +76,13 @@ return {
           },
         },
       },
+      autotag = {
+        enable = true,
+      },
     }
 
     local context = require('treesitter-context')
-    vim.keymap.set('n', '[c', context.go_to_context, {silent=true})
-    vim.keymap.set('n', '<leader>c', context.toggle, {silent=true})
+    vim.keymap.set('n', '[c', context.go_to_context, {silent=true, desc='Go to upper context (treesitter-context)'})
+    vim.keymap.set('n', '<leader>c', context.toggle, {silent=true, desc='Toggle treesitter-context'})
   end
 }
