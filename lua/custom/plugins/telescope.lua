@@ -39,7 +39,7 @@ return {
             preview_cutoff = 20,
           },
         },
-        path_display = { "smart" }
+        -- path_display = { "smart" }
       },
       pickers = {
         buffers = {

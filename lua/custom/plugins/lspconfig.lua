@@ -64,9 +64,10 @@ return {
       -- gopls = {},
       -- pyright = {},
       -- rust_analyzer = {},
-      -- tsserver = {},
+      tsserver = {},
       -- html = { filetypes = { 'html', 'twig', 'hbs'} },
       tailwindcss = {},
+      gopls = {},
 
       lua_ls = {
         Lua = {
@@ -103,16 +104,16 @@ return {
     }
 
     -- tsserver (bun)
-    lspconfig.tsserver.setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = {
-        cmd = { 'bunx', '--bun', 'typescript-language-server', '--stdio' },
-        completions = {
-          completeFunctionCalls = true
-        }
-      },
-    }
+    -- lspconfig.tsserver.setup {
+    --   capabilities = capabilities,
+    --   on_attach = on_attach,
+    --   settings = {
+    --     cmd = { 'bunx', '--bun', 'typescript-language-server', '--stdio' },
+    --     completions = {
+    --       completeFunctionCalls = true
+    --     }
+    --   },
+    -- }
 
     -- lexical (elixir lsp)
     local lexical_config = {

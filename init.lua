@@ -37,7 +37,7 @@ require('lazy').setup({
   'tpope/vim-sleuth',
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim',   opts = {} },
+  { 'folke/which-key.nvim',  opts = {} },
 
   {
     'EdenEast/nightfox.nvim',
@@ -71,18 +71,17 @@ require('lazy').setup({
     main = "ibl",
     opts = {
       indent = { char = '┊' },
-      scope = { show_start = false }
+      scope = { show_start = false, show_end = false }
     }
   },
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',  opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
-  -- require 'kickstart.plugins.debug',
+  { import = 'kickstart.plugins' },
   { import = 'custom.plugins' },
 }, {})
 
@@ -101,7 +100,7 @@ vim.o.relativenumber = true
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
--- vim.o.clipboard = 'unnamedplus'
+vim.o.clipboard = 'unnamed'
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -157,7 +156,7 @@ vim.keymap.set('v', '>', '>gv', { silent = true, desc = 'add indentation to sele
 vim.keymap.set('v', '<', '<gv', { silent = true, desc = 'remove indentation from selection' })
 
 -- buffers
-vim.keymap.set('n', '<leader>d', '<cmd>bdel<CR>', { silent = true, desc = '[d]elete buffer' })
+-- vim.keymap.set('n', '<leader>d', '<cmd>bdel<CR>', { silent = true, desc = '[d]elete buffer' })
 vim.keymap.set('n', '<leader><Space>', '<C-^>', { silent = true, desc = 'Open previous file' })
 vim.keymap.set('n', '<C-s>', '<cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
 vim.keymap.set('i', '<C-s>', '<esc><cmd>w<CR>', { silent = true, desc = 'write to current buffer' })
