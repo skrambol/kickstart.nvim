@@ -132,6 +132,7 @@ vim.o.sidescrolloff = 4
 vim.o.list = true
 vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }
 vim.o.showmode = false
+vim.o.tabstop = 2
 
 -- [[ Basic Keymaps ]]
 
