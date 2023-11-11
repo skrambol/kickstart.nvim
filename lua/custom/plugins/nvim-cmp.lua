@@ -51,9 +51,9 @@ return {
           end
         end, { 'i', 's' }),
       },
-      completion = {
-        keyword_length = 3
-      },
+      -- completion = {
+      --   keyword_length = 3
+      -- },
       sources = {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },

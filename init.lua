@@ -81,7 +81,8 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  { import = 'kickstart.plugins' },
+  require ('kickstart.plugins.debug'),
+  require ('kickstart.plugins.autoformat'),
   { import = 'custom.plugins' },
 }, {})
 
@@ -134,6 +135,9 @@ vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }
 vim.o.showmode = false
 vim.o.tabstop = 2
 
+vim.g.netrw_banner = 0
+vim.g.netrw_fastbrowse = 0
+
 -- [[ Basic Keymaps ]]
 
 -- Keymaps for better default experience
@@ -143,8 +147,6 @@ vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 -- Remap for dealing with word wrap
 vim.keymap.set({ 'n', 'v' }, 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
 vim.keymap.set({ 'n', 'v' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
--- vim.keymap.set({ 'n', 'v' }, '0', "v:count == 0 ? 'g0' : 'k'", { expr = true, silent = true })
--- vim.keymap.set({ 'n', 'v' }, '$', "v:count == 0 ? 'g$' : 'j'", { expr = true, silent = true })
 
 -- fugitive
 vim.keymap.set('n', '<leader>gs', '<cmd>G<CR><C-w><C-o>', { silent = true, desc = 'git status' })
@@ -188,6 +190,8 @@ local function wrap_list(list, command)
 end
 vim.keymap.set('n', ']q', function() wrap_list('c', 'next') end, { silent = true, desc = 'Next quickfix item' })
 vim.keymap.set('n', '[q', function() wrap_list('c', 'prev') end, { silent = true, desc = 'Previous quickfix item' })
+
+vim.keymap.set('n', '<F3>', '<cmd>Ex<CR>')
 
 -- [[ Highlight on yank ]]
 -- See `:help vim.highlight.on_yank()`
