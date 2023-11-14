@@ -81,9 +81,9 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  require ('kickstart.plugins.debug'),
-  require ('kickstart.plugins.autoformat'),
+  require('kickstart.plugins.debug'),
   { import = 'custom.plugins' },
+  -- require('kickstart.plugins.autoformat'),
 }, {})
 
 -- [[ Setting options ]]
@@ -96,7 +96,9 @@ vim.o.number = true
 vim.o.relativenumber = true
 
 -- Enable mouse mode
--- vim.o.mouse = 'a'
+vim.o.mouse = 'a'
+vim.keymap.set({ 'n', 'i', 'v' }, '<LeftMouse>', '<Nop>')
+vim.keymap.set({ 'n', 'i', 'v' }, '<RightMouse>', '<Nop>')
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
@@ -129,6 +131,7 @@ vim.o.termguicolors = true
 vim.o.wrap = false
 vim.o.scrolloff = 9999
 vim.o.sidescrolloff = 4
+vim.o.pumheight = 10
 
 vim.o.list = true
 vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }

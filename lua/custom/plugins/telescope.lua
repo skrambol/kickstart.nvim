@@ -64,10 +64,7 @@ return {
     vim.keymap.set('n', '<C-b>', require('telescope.builtin').buffers, { desc = '[b] Find existing buffers' })
     vim.keymap.set('n', '<leader>/', function()
       -- You can pass additional configuration to telescope to change theme, layout, etc.
-      require('telescope.builtin').current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-        -- winblend = 10,
-        previewer = false,
-      })
+      require('telescope.builtin').current_buffer_fuzzy_find({ previewer = false, })
     end, { desc = '[/] Fuzzily search in current buffer' })
 
     vim.keymap.set('n', '<C-p>', function ()
@@ -90,5 +87,6 @@ return {
     vim.keymap.set('n', '<leader>vrc', function ()
       require('telescope.builtin').git_files({cwd = "~/.config/nvim"})
     end, {desc = 'Search neovim config'})
+    vim.keymap.set('n', '<leader>o', require('telescope.builtin').oldfiles, { desc = 'Telescope [O]ldfiles'})
   end
 }

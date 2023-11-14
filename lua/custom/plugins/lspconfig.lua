@@ -8,7 +8,10 @@ return {
 
     -- Useful status updates for LSP
     -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-    { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {align ={bottom=false}} },
+    {
+      'j-hui/fidget.nvim',
+      opts = {}
+    },
 
     -- Additional lua configuration, makes nvim stuff amazing!
     'folke/neodev.nvim',
@@ -39,11 +42,12 @@ return {
 
       -- Lesser used LSP functionality
       nmap('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
-      nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
-      nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
-      nmap('<leader>wl', function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-      end, '[W]orkspace [L]ist Folders')
+      -- nmap('<leader>wa', vim.lsp.buf.add_workspace_folder, '[W]orkspace [A]dd Folder')
+      -- nmap('<leader>wr', vim.lsp.buf.remove_workspace_folder, '[W]orkspace [R]emove Folder')
+      -- nmap('<leader>wl', function()
+      --   print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+      -- end, '[W]orkspace [L]ist Folders')
+      nmap('<F25>', function() vim.lsp.inlay_hint(0, nil) end)
 
       -- Create a command `:Format` local to the LSP buffer
       vim.api.nvim_buf_create_user_command(bufnr, 'Format', function(_)
@@ -63,11 +67,9 @@ return {
       clangd = {},
       -- gopls = {},
       pyright = {},
-      -- rust_analyzer = {},
       tsserver = {},
       -- html = { filetypes = { 'html', 'twig', 'hbs'} },
       tailwindcss = {},
-      gopls = {},
 
       lua_ls = {
         Lua = {
@@ -101,6 +103,11 @@ return {
           filetypes = (servers[server_name] or {}).filetypes,
         }
       end
+    }
+
+    lspconfig.rust_analyzer.setup {
+      capabilities = capabilities,
+      on_attach = on_attach,
     }
 
     -- tsserver (bun)
@@ -138,5 +145,7 @@ return {
       capabilities = capabilities,
       on_attach = on_attach,
     })
+
+    require('kickstart.plugins.autoformat').config()
   end
 }

@@ -11,8 +11,10 @@ return {
 
     -- Adds a number of user-friendly snippets
     'rafamadriz/friendly-snippets',
+
+    'onsails/lspkind.nvim',
   },
-  config = function ()
+  config = function()
     local cmp = require 'cmp'
     local luasnip = require 'luasnip'
     require('luasnip.loaders.from_vscode').lazy_load()
@@ -24,6 +26,9 @@ return {
           luasnip.lsp_expand(args.body)
         end,
       },
+      completion = {
+        completeopt = 'menu,menuone,noinsert'
+      },
       mapping = cmp.mapping.preset.insert {
         ['<C-n>'] = cmp.mapping.select_next_item(),
         ['<C-p>'] = cmp.mapping.select_prev_item(),
@@ -32,7 +37,7 @@ return {
         ['<C-Space>'] = cmp.mapping.complete {},
         ['<CR>'] = cmp.mapping.confirm {
           behavior = cmp.ConfirmBehavior.Replace,
-          select = true,
+          -- select = true,
         },
         ['<Tab>'] = cmp.mapping(function(fallback)
           -- if cmp.visible() then
@@ -51,13 +56,24 @@ return {
           end
         end, { 'i', 's' }),
       },
-      -- completion = {
-      --   keyword_length = 3
-      -- },
       sources = {
         { name = 'nvim_lsp' },
         { name = 'luasnip' },
-      }
+      },
+      formatting = {
+        format = require('lspkind').cmp_format({
+          mode = 'text_symbol',
+          maxwidth = 50,
+          ellipsis_char = '...',
+          menu = ({
+            nvim_lsp = "[LSP]",
+            luasnip = "[LuaSnip]",
+          })
+          -- before = function (entry, vim_time)
+          -- ...
+          -- end
+        })
+      },
     }
   end
 }
