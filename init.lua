@@ -4,6 +4,7 @@
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.g.loaded_matchparen = 1
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -63,17 +64,6 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    main = "ibl",
-    opts = {
-      indent = { char = '┊' },
-      scope = { show_start = false, show_end = false }
-    }
-  },
 
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
@@ -97,13 +87,13 @@ vim.o.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
-vim.keymap.set({ 'n', 'i', 'v' }, '<LeftMouse>', '<Nop>')
-vim.keymap.set({ 'n', 'i', 'v' }, '<RightMouse>', '<Nop>')
+-- vim.keymap.set({ 'n', 'i', 'v' }, '<LeftMouse>', '<Nop>')
+-- vim.keymap.set({ 'n', 'i', 'v' }, '<RightMouse>', '<Nop>')
 
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.o.clipboard = 'unnamed'
+-- vim.o.clipboard = 'unnamed'
 
 -- Enable break indent
 vim.o.breakindent = true
@@ -134,7 +124,7 @@ vim.o.sidescrolloff = 4
 vim.o.pumheight = 10
 
 vim.o.list = true
-vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }
+vim.opt.listchars = { trail = '·', tab = '▷▷⋮', leadmultispace = '┊ ', }
 vim.o.showmode = false
 vim.o.tabstop = 2
 

@@ -4,7 +4,9 @@ return {
   dependencies = {
     'nvim-treesitter/nvim-treesitter-textobjects',
     'nvim-treesitter/nvim-treesitter-context',
+    'nvim-treesitter/playground',
     'windwp/nvim-ts-autotag',
+    'andymass/vim-matchup',
   },
   build = ':TSUpdate',
   config = function()
@@ -80,10 +82,16 @@ return {
         enable = true,
         enable_close_on_slash = false,
       },
+      matchup = {
+        enable = true,
+        disable_virtual_text = true,
+      }
     }
 
+    vim.g.matchup_delim_noskips = 2
+
     local context = require('treesitter-context')
-    vim.keymap.set('n', '[c', context.go_to_context, {silent=true, desc='Go to upper context (treesitter-context)'})
-    vim.keymap.set('n', '<leader>c', context.toggle, {silent=true, desc='Toggle treesitter-context'})
+    vim.keymap.set('n', '[c', context.go_to_context, { silent = true, desc = 'Go to upper context (treesitter-context)' })
+    vim.keymap.set('n', '<leader>c', context.toggle, { silent = true, desc = 'Toggle treesitter-context' })
   end
 }

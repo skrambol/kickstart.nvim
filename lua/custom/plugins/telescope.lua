@@ -16,7 +16,7 @@ return {
       end,
     },
   },
-  config = function ()
+  config = function()
     -- [[ Configure Telescope ]]
     -- See `:help telescope` and `:help telescope.setup()`
     require('telescope').setup {
@@ -67,7 +67,7 @@ return {
       require('telescope.builtin').current_buffer_fuzzy_find({ previewer = false, })
     end, { desc = '[/] Fuzzily search in current buffer' })
 
-    vim.keymap.set('n', '<C-p>', function ()
+    vim.keymap.set('n', '<C-p>', function()
       if pcall(require('telescope.builtin').git_files) then
       else
         print("[!] Directory is not a git repository. Running search files instead.")
@@ -84,9 +84,8 @@ return {
     vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
     vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
-    vim.keymap.set('n', '<leader>vrc', function ()
-      require('telescope.builtin').git_files({cwd = "~/.config/nvim"})
-    end, {desc = 'Search neovim config'})
-    vim.keymap.set('n', '<leader>o', require('telescope.builtin').oldfiles, { desc = 'Telescope [O]ldfiles'})
+    vim.keymap.set('n', '<leader>vrc', function()
+      require('telescope.builtin').git_files({ cwd = "~/.config/nvim" })
+    end, { desc = 'Search neovim config' })
   end
 }

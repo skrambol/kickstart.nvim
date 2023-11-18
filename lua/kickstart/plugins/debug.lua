@@ -109,8 +109,8 @@ return {
           type = 'pwa-node',
           name = 'Attach to node process',
           request = 'attach',
-          processId = function ()
-            require('dap.utils').pick_process({filter = '--inspect'})
+          processId = function()
+            require('dap.utils').pick_process({ filter = '--inspect' })
           end,
           sourceMaps = true,
           resolveSourceMapLocations = {
@@ -135,8 +135,22 @@ return {
           -- skip files from vite's hmr
           skipFiles = { "**/node_modules/**/*", "**/@vite/*", "**/src/client/*", "**/src/*" },
         },
+        {
+          type = "pwa-node",
+          request = "launch",
+          name = "Debug Jest Tests",
+          -- trace = true, -- include debugger info
+          runtimeExecutable = "node",
+          runtimeArgs = {
+            "./node_modules/jest/bin/jest.js",
+            "--runInBand",
+          },
+          rootPath = "${workspaceFolder}",
+          cwd = "${workspaceFolder}",
+          console = "integratedTerminal",
+          internalConsoleOptions = "neverOpen",
+        }
       }
     end
-
   end,
 }
