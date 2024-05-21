@@ -63,25 +63,13 @@ require('lazy').setup({
     },
   },
 
-  {
-    -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
-    main = "ibl",
-    opts = {
-      indent = { char = '┊' },
-      scope = { show_start = false, show_end = false }
-    }
-  },
-
   -- "gc" to comment visual regions/lines
   { 'numToStr/Comment.nvim', opts = {} },
 
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  require('kickstart.plugins.debug'),
+  -- require('kickstart.plugins.debug'),
   { import = 'custom.plugins' },
   -- require('kickstart.plugins.autoformat'),
 }, {})
@@ -133,10 +121,10 @@ vim.o.scrolloff = 9999
 vim.o.sidescrolloff = 4
 vim.o.pumheight = 10
 
-vim.o.list = true
-vim.opt.listchars = { trail = '·', tab = '▷▷⋮' }
 vim.o.showmode = false
 vim.o.tabstop = 2
+
+vim.o.fixeol = false
 
 vim.g.netrw_banner = 0
 vim.g.netrw_fastbrowse = 0
@@ -154,6 +142,7 @@ vim.keymap.set({ 'n', 'v' }, 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, si
 -- fugitive
 vim.keymap.set('n', '<leader>gs', '<cmd>G<CR><C-w><C-o>', { silent = true, desc = 'git status' })
 vim.keymap.set('n', '<leader>gl', '<cmd>Git log<CR>', { silent = true, desc = 'git log' })
+vim.keymap.set('n', '<leader>gb', '<cmd>Git blame<CR>', { silent = true, desc = 'git blame' })
 
 -- move lines
 vim.keymap.set('v', 'J', ':m \'>+1<CR>gv=gv', { silent = true, desc = 'move selection down one line' })
@@ -212,6 +201,29 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+vim.o.list = true
+vim.opt.listchars = {
+  trail = '·',
+  tab = '┊ ',
+  precedes = "<",
+  extends = ">",
+  multispace = " ",
+  nbsp = "␣",
+}
+local function update_lead()
+  local lcs = vim.opt_local.listchars:get()
+  local tab = vim.fn.str2list(lcs.tab)
+  local space = vim.fn.str2list(lcs.multispace or lcs.space)
+  local lead = { tab[1] }
+  for i = 1, vim.bo.tabstop - 1 do
+    lead[#lead + 1] = space[i % #space + 1]
+  end
+  vim.opt_local.listchars:append({ leadmultispace = vim.fn.list2str(lead) })
+  -- vim.print(vim.fn.expand('%') .. ' ' .. vim.bo.filetype .. vim.bo.tabstop .. vim.inspect(vim.opt_local.listchars:get()["leadmultispace"]))
+end
+vim.api.nvim_create_autocmd("OptionSet", { pattern = { "listchars", "tabstop", "filetype" }, callback = update_lead })
+vim.api.nvim_create_autocmd("BufRead", { callback = update_lead})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

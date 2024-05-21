@@ -1,6 +1,6 @@
 return {
   'nvim-telescope/telescope.nvim',
-  branch = '0.1.x',
+  branch = 'master',
   dependencies = {
     'nvim-lua/plenary.nvim',
     -- Fuzzy Finder Algorithm which requires local dependencies to be built.
@@ -39,7 +39,7 @@ return {
             preview_cutoff = 20,
           },
         },
-        -- path_display = { "smart" }
+        path_display = { "filename_first" }
       },
       pickers = {
         buffers = {
